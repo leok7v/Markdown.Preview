@@ -1,6 +1,7 @@
 import SwiftUI
 
 #if os(macOS)
+
 import AppKit
 
 typealias PlatformFont = NSFont
@@ -18,6 +19,7 @@ func boldFont(of f: PlatformFont) -> PlatformFont {
 }
 
 #elseif os(iOS)
+
 import UIKit
 
 typealias PlatformFont = UIFont
@@ -35,4 +37,5 @@ func boldFont(of f: PlatformFont) -> PlatformFont {
     }
     return f
 }
+
 #endif

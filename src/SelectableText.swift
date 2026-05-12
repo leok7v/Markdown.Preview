@@ -43,6 +43,7 @@ struct SelectableText: View {
                    secondary: secondary)
             .fixedSize(horizontal: nowrap, vertical: true)
     }
+
 }
 
 struct NativeText {
@@ -148,5 +149,6 @@ struct NativeText {
         #endif
         return result
     }
+
 }
 

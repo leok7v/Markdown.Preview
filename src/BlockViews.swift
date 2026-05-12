@@ -6,6 +6,7 @@ import UIKit
 #endif
 
 struct BlockView: View {
+
     let block: Block
 
     var body: some View {
@@ -36,6 +37,7 @@ struct BlockView: View {
                                width: width, height: height)
         }
     }
+
 }
 
 private struct ImageBlockView: View {
@@ -194,6 +196,7 @@ private struct CodeBlock: View {
                 .padding(6)
         }
     }
+
 }
 
 private struct TableBlock: View {
@@ -310,4 +313,5 @@ private struct CopyButton: View {
         copied = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { copied = false }
     }
+
 }

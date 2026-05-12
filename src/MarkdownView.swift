@@ -6,6 +6,7 @@ import UIKit
 #endif
 
 struct MarkdownView: View {
+
     let text: String
     let fileURL: URL?
 
@@ -125,4 +126,5 @@ struct MarkdownView: View {
         return Color(.systemBackground)
         #endif
     }
+
 }

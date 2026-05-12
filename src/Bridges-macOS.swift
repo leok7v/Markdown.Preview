@@ -90,4 +90,5 @@ extension NativeText: NSViewRepresentable {
             }
         }
     }
+
 }

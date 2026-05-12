@@ -6,7 +6,9 @@ import UIKit
 #endif
 
 #if os(macOS)
+
 struct WindowFrameAutosave: NSViewRepresentable {
+
     let name: String
     func makeNSView(context: Context) -> NSView {
         let v = NSView(frame: .zero)
@@ -26,6 +28,7 @@ struct WindowFrameAutosave: NSViewRepresentable {
 }
 
 struct WindowAppearanceApplier: NSViewRepresentable {
+
     let scheme: ColorScheme?
 
     final class Coordinator {
@@ -102,6 +105,7 @@ struct WindowAppearanceApplier: NSViewRepresentable {
 #elseif os(iOS)
 
 struct WindowAppearanceApplier: UIViewRepresentable {
+
     let scheme: ColorScheme?
     func makeUIView(context: Context) -> UIView {
         let v = UIView(frame: .zero)
@@ -123,10 +127,12 @@ struct WindowAppearanceApplier: UIViewRepresentable {
             view.window?.overrideUserInterfaceStyle = style
         }
     }
+
 }
 #endif
 
 final class MarkdownFileWatcher: NSObject, NSFilePresenter {
+
     let url: URL
     let presentedItemOperationQueue = OperationQueue.main
     var presentedItemURL: URL? { url }
@@ -174,4 +180,5 @@ final class MarkdownFileWatcher: NSObject, NSFilePresenter {
                 }
             }
     }
+    
 }

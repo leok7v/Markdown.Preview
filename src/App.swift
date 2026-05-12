@@ -5,6 +5,7 @@ import AppKit
 
 @main
 struct MarkdownPreviewApp: App {
+
     init() {
         TempPDFs.cleanOnLaunch()
         primeOpenPanelDefault()
@@ -78,4 +79,5 @@ struct MarkdownPreviewApp: App {
         return scene
         #endif
     }
+
 }

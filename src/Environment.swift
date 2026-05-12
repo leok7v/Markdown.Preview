@@ -46,9 +46,11 @@ enum ThemeMode: String, CaseIterable {
             case .dark: return .system
         }
     }
+
 }
 
 struct ThemeButton: View {
+
     let theme: ThemeMode
     let onCycle: () -> Void
 
@@ -58,4 +60,5 @@ struct ThemeButton: View {
         }
         .help(theme.help)
     }
+
 }

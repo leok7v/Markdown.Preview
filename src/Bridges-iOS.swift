@@ -28,4 +28,5 @@ extension NativeText: UIViewRepresentable {
             v.invalidateIntrinsicContentSize()
         }
     }
+
 }

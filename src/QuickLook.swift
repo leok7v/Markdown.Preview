@@ -28,7 +28,6 @@ final class QuickLookViewController: NSViewController, QLPreviewingController {
         // synchronously.
         let blocks = Markdown.parse(text)
         let prefetched = await Self.prefetchImages(in: blocks)
-
         await MainActor.run {
             if let t = themeObserver {
                 NotificationCenter.default.removeObserver(t)
@@ -72,8 +71,7 @@ final class QuickLookViewController: NSViewController, QLPreviewingController {
         var urls: Set<URL> = []
         for b in blocks {
             switch b {
-                case .image(_, let u, _, _):
-                    urls.insert(u)
+                case .image(_, let u, _, _): urls.insert(u)
                 case .table(_, let rows):
                     for row in rows {
                         for cell in row {
@@ -84,8 +82,7 @@ final class QuickLookViewController: NSViewController, QLPreviewingController {
                             }
                         }
                     }
-                default:
-                    break
+                default: break
             }
         }
         let agent = "Markdown.Preview/1.0" +
@@ -114,4 +111,5 @@ final class QuickLookViewController: NSViewController, QLPreviewingController {
         }
         return out
     }
+
 }

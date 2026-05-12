@@ -2,6 +2,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct MarkdownDocument: FileDocument {
+
     static let readableContentTypes: [UTType] = {
         var t: [UTType] = []
         if let x = UTType(filenameExtension: "md") { t.append(x) }
@@ -13,6 +14,7 @@ struct MarkdownDocument: FileDocument {
         if t.isEmpty { t = [.plainText] }
         return t
     }()
+
     static let writableContentTypes: [UTType] = []
 
     var text: String = ""
@@ -577,6 +579,7 @@ enum Markdown {
             }
         }
     }
+
 }
 
 private extension String {
@@ -592,6 +595,7 @@ private extension String {
         }
         return String(self[i...])
     }
+
 }
 
 enum TeX {
@@ -859,5 +863,6 @@ enum TeX {
         "l": "ₗ", "m": "ₘ", "n": "ₙ", "o": "ₒ", "p": "ₚ", "r": "ᵣ",
         "s": "ₛ", "t": "ₜ", "u": "ᵤ", "v": "ᵥ", "x": "ₓ",
     ]
+
 }
 
