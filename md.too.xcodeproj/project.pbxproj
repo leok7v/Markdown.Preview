@@ -10,6 +10,15 @@
 		1A2B3C4D5300000000000001 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5200000000000001 /* MarkdownParser.swift */; };
 		1A2B3C4D5300000000000002 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5200000000000001 /* MarkdownParser.swift */; };
 		1A2B3C4D5300000000000003 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5200000000000001 /* MarkdownParser.swift */; };
+		1A2B3C4D5300000000000004 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5200000000000007 /* Assets.xcassets */; };
+		1A2B3C4D5300000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5200000000000007 /* Assets.xcassets */; };
+		1A2B3C4D5300000000000006 /* md.too QuickLook.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000A /* md.too QuickLook.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1A2B3C4D5300000000000007 /* Highlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000B /* Highlight.swift */; };
+		1A2B3C4D5300000000000008 /* Highlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000B /* Highlight.swift */; };
+		1A2B3C4D5300000000000009 /* Highlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000B /* Highlight.swift */; };
+		1A2B3C4D530000000000000A /* highlights.ini in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000C /* highlights.ini */; };
+		1A2B3C4D530000000000000B /* highlights.ini in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000C /* highlights.ini */; };
+		1A2B3C4D530000000000000C /* highlights.ini in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000C /* highlights.ini */; };
 		1A2B3C4D530000000000000E /* PDFRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000F /* PDFRenderer.swift */; };
 		1A2B3C4D530000000000000F /* PDFRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000F /* PDFRenderer.swift */; };
 		1A2B3C4D5300000000000010 /* QuickLook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5200000000000010 /* QuickLook.swift */; };
@@ -41,15 +50,6 @@
 		1A2B3C4D530000000000002A /* SelectableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000001C /* SelectableText.swift */; };
 		1A2B3C4D530000000000002B /* SelectableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000001C /* SelectableText.swift */; };
 		1A2B3C4D530000000000002C /* SelectableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000001C /* SelectableText.swift */; };
-		1A2B3C4D5300000000000004 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5200000000000007 /* Assets.xcassets */; };
-		1A2B3C4D5300000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5200000000000007 /* Assets.xcassets */; };
-		1A2B3C4D5300000000000006 /* md.too QuickLook.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000A /* md.too QuickLook.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		1A2B3C4D5300000000000007 /* Highlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000B /* Highlight.swift */; };
-		1A2B3C4D5300000000000008 /* Highlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000B /* Highlight.swift */; };
-		1A2B3C4D5300000000000009 /* Highlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000B /* Highlight.swift */; };
-		1A2B3C4D530000000000000A /* highlights.ini in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000C /* highlights.ini */; };
-		1A2B3C4D530000000000000B /* highlights.ini in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000C /* highlights.ini */; };
-		1A2B3C4D530000000000000C /* highlights.ini in Resources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D520000000000000C /* highlights.ini */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -509,10 +509,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = config/Markdown.Preview.debug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 692R843P25;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "config/Info-macOS.plist";
@@ -526,6 +528,7 @@
 				PRODUCT_MODULE_NAME = MarkdownPreview;
 				PRODUCT_NAME = md.too;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SDKROOT = macosx;
 				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -539,10 +542,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = config/Markdown.Preview.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
+				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 692R843P25;
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "config/Info-macOS.plist";
@@ -556,6 +561,7 @@
 				PRODUCT_MODULE_NAME = MarkdownPreview;
 				PRODUCT_NAME = md.too;
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SDKROOT = macosx;
 				SUPPORTED_PLATFORMS = macosx;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -569,7 +575,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 692R843P25;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "config/Info-iOS.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Markdown;
@@ -599,7 +605,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 692R843P25;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "config/Info-iOS.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Markdown;
@@ -628,9 +634,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = config/QuickLook.debug.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 692R843P25;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "config/Info-QuickLook.plist";
@@ -643,6 +651,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.leok7v.md.too.QuickLook;
 				PRODUCT_MODULE_NAME = MarkdownPreviewQuickLook;
 				PRODUCT_NAME = "md.too QuickLook";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -657,9 +666,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = config/QuickLook.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = 692R843P25;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = "config/Info-QuickLook.plist";
@@ -672,6 +683,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.leok7v.md.too.QuickLook;
 				PRODUCT_MODULE_NAME = MarkdownPreviewQuickLook;
 				PRODUCT_NAME = "md.too QuickLook";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
