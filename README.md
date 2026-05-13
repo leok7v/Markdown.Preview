@@ -26,11 +26,8 @@ A friend asked me last week what a Markdown file is. I had to explain that `.md`
 
 ## Download
 
-Signed and notarized macOS `.dmg` is published as a GitHub Release on each tagged version:
-
-[**Latest release**](https://github.com/leok7v/md.too/releases/latest)
-
-iOS app is in App Store review.
+- iOS / iPadOS — on the [App Store](https://apps.apple.com/us/app/md-too/id6767852877).
+- macOS — signed and notarized `.dmg` published as a [GitHub Release](https://github.com/leok7v/md.too/releases/latest) on each tagged version.
 
 ## Build from source
 
