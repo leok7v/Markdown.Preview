@@ -1,10 +1,46 @@
 import SwiftUI
 #if os(macOS)
 import AppKit
+
+@MainActor
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    // Quit when the last document window closes — but only after the
+    // user has actually opened a document. Otherwise launching from
+    // Finder (which auto-presents the Open panel) and cancelling would
+    // terminate the process before the user could pick a file.
+    // NSPanel (the Open panel) is filtered out so it doesn't count as
+    // a "document window".
+    private var didOpenDocumentWindow = false
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(windowDidBecomeKey(_:)),
+            name: NSWindow.didBecomeKeyNotification,
+            object: nil
+        )
+    }
+
+    @objc private func windowDidBecomeKey(_ note: Notification) {
+        if let w = note.object as? NSWindow, !(w is NSPanel) {
+            didOpenDocumentWindow = true
+        }
+    }
+
+    func applicationShouldTerminateAfterLastWindowClosed(
+        _ sender: NSApplication
+    ) -> Bool {
+        didOpenDocumentWindow
+    }
+}
 #endif
 
 @main
 struct MarkdownPreviewApp: App {
+
+    #if os(macOS)
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    #endif
 
     init() {
         TempPDFs.cleanOnLaunch()
