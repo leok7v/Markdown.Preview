@@ -716,7 +716,7 @@
     <p>The most popular JavaScript Markdown library lists about 636 transitive packages and ~39,000 lines of code on its public dependency graph. The md.too app is a few Swift files with no dependencies. Every package you don't pull in is a CVE you don't have to read on a Saturday night.</p>
 
     <h2>See it in action</h2>
-    <p>A short loop through <a href="https://raw.githubusercontent.com/leok7v/md.too/refs/heads/main/EXAMPLE.md" download="EXAMPLE.md" target="_blank" rel="noopener">EXAMPLE.md</a> (download to open in md.too) on each platform.</p>
+    <p>A short loop through <a class="md-download" href="https://raw.githubusercontent.com/leok7v/md.too/refs/heads/main/EXAMPLE.md" download="EXAMPLE.md">EXAMPLE.md</a> (download to open in md.too) on each platform.</p>
     <figure class="demo-pair">
         <video class="demo demo-macos" src="videos/md.too.macos.mp4"
                autoplay loop muted playsinline preload="metadata"
@@ -758,6 +758,21 @@
             updateToggle();
         });
         updateToggle();
+        document.querySelectorAll('a.md-download').forEach(function(a) {
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                fetch(a.href).then(function(r) { return r.blob(); }).then(function(blob) {
+                    var url = URL.createObjectURL(blob);
+                    var t = document.createElement('a');
+                    t.href = url;
+                    t.download = a.getAttribute('download') || 'EXAMPLE.md';
+                    document.body.appendChild(t);
+                    t.click();
+                    document.body.removeChild(t);
+                    URL.revokeObjectURL(url);
+                });
+            });
+        });
         document.querySelectorAll('.screenshot').forEach(function(img) {
             img.addEventListener('click', function() {
                 img.classList.toggle('zoomed');
