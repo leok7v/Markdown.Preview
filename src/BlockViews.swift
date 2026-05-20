@@ -90,7 +90,12 @@ private struct ImageBlockView: View {
         req.setValue(agent, forHTTPHeaderField: "User-Agent")
         var done = false
         var attempt = 0
-        while attempt < 2, !done {
+        // !Task.isCancelled in the guard: when SwiftUI cancels the
+        // .task(id:) on view destruction or URL change, the in-flight
+        // URLSession + Task.sleep both throw CancellationError; the
+        // try? swallows it but without this check the loop would still
+        // run one more wasted iteration before attempt < 2 falsifies.
+        while attempt < 2, !done, !Task.isCancelled {
             do {
                 let (data, response) =
                     try await URLSession.shared.data(for: req)

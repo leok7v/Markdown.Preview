@@ -93,62 +93,13 @@ struct NativeText {
         return ns
     }
 
-    private var primaryColor: PlatformColor {
-        #if os(macOS)
-        return NSColor.textColor
-        #else
-        return UIColor.label
-        #endif
-    }
-
-    private var secondaryColor: PlatformColor {
-        #if os(macOS)
-        return NSColor.secondaryLabelColor
-        #else
-        return UIColor.secondaryLabel
-        #endif
-    }
-
-    private func mergeTraits(of source: PlatformFont,
-                             into base: PlatformFont,
-                             bold: Bool) -> PlatformFont {
-        var result = base
-        #if os(macOS)
-        var traits = source.fontDescriptor.symbolicTraits
-        traits.formUnion(base.fontDescriptor.symbolicTraits)
-        if bold { traits.insert(.bold) }
-        let descriptor = base.fontDescriptor.withSymbolicTraits(traits)
-        result = NSFont(descriptor: descriptor,
-                        size: base.pointSize) ?? base
-        #else
-        var traits = source.fontDescriptor.symbolicTraits
-        traits.formUnion(base.fontDescriptor.symbolicTraits)
-        if bold { traits.insert(.traitBold) }
-        if let descriptor = base.fontDescriptor
-            .withSymbolicTraits(traits) {
-            result = UIFont(descriptor: descriptor,
-                            size: base.pointSize)
-        }
-        #endif
-        return result
-    }
-
-    private func boldFont(_ f: PlatformFont) -> PlatformFont {
-        var result = f
-        #if os(macOS)
-        var traits = f.fontDescriptor.symbolicTraits
-        traits.insert(.bold)
-        let d = f.fontDescriptor.withSymbolicTraits(traits)
-        result = NSFont(descriptor: d, size: f.pointSize) ?? f
-        #else
-        var traits = f.fontDescriptor.symbolicTraits
-        traits.insert(.traitBold)
-        if let d = f.fontDescriptor.withSymbolicTraits(traits) {
-            result = UIFont(descriptor: d, size: f.pointSize)
-        }
-        #endif
-        return result
-    }
+    // The four per-platform helpers (primaryColor, secondaryColor,
+    // mergeTraits, boldFont) live in Bridges-macOS.swift and
+    // Bridges-iOS.swift, exposed via extensions on NativeText. Each
+    // Bridges file is target-membership-gated, so only the right
+    // platform's implementation links into each target. This file
+    // stays platform-agnostic apart from the AppKit/UIKit import
+    // needed for NSAttributedString.Key.font/.foregroundColor.
 
 }
 

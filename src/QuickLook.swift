@@ -68,48 +68,11 @@ final class QuickLookViewController: NSViewController, QLPreviewingController {
 
     private static func prefetchImages(in blocks: [Block])
         async -> [URL: Image] {
-        var urls: Set<URL> = []
-        for b in blocks {
-            switch b {
-                case .image(_, let u, _, _): urls.insert(u)
-                case .table(_, let rows):
-                    for row in rows {
-                        for cell in row {
-                            let parsed = Markdown.parse(cell)
-                            if let first = parsed.first,
-                               case .image(_, let u, _, _) = first {
-                                urls.insert(u)
-                            }
-                        }
-                    }
-                default: break
-            }
+        let urls = ImagePrefetch.collectURLs(in: blocks)
+        let datas = await ImagePrefetch.fetch(urls)
+        return datas.compactMapValues { d in
+            NSImage(data: d).map { ns in Image(nsImage: ns) }
         }
-        let agent = "Markdown.Preview/1.0" +
-                    " (https://github.com/leok7v/md.too)"
-        let datas: [(URL, Data?)] =
-            await withTaskGroup(of: (URL, Data?).self) { group in
-                for u in urls {
-                    group.addTask {
-                        var req = URLRequest(url: u)
-                        req.setValue(agent,
-                                     forHTTPHeaderField: "User-Agent")
-                        let data = try? await URLSession.shared
-                            .data(for: req).0
-                        return (u, data)
-                    }
-                }
-                var result: [(URL, Data?)] = []
-                for await pair in group { result.append(pair) }
-                return result
-            }
-        var out: [URL: Image] = [:]
-        for (u, data) in datas {
-            if let data, let nsImg = NSImage(data: data) {
-                out[u] = Image(nsImage: nsImg)
-            }
-        }
-        return out
     }
 
 }

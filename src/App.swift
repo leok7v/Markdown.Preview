@@ -89,15 +89,16 @@ struct MarkdownPreviewApp: App {
         // now". Skip stale entries (file moved/deleted). Fall back to
         // ~/Documents on first launch (no recents yet) so the panel
         // doesn't default to /Applications where the .app sits.
-        let recents = NSDocumentController.shared.recentDocumentURLs
-        for url in recents {
-            let parent = url.deletingLastPathComponent()
-            if FileManager.default.fileExists(atPath: parent.path) {
-                return parent
-            }
-        }
-        return FileManager.default.urls(
+        var result = FileManager.default.urls(
             for: .documentDirectory, in: .userDomainMask).first
+        let recents = NSDocumentController.shared.recentDocumentURLs
+        if let live = recents.first(where: { u in
+            FileManager.default.fileExists(
+                atPath: u.deletingLastPathComponent().path)
+        }) {
+            result = live.deletingLastPathComponent()
+        }
+        return result
     }
     #endif
 

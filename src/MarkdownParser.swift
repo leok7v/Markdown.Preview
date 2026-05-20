@@ -695,27 +695,12 @@ enum TeX {
         var i = s.startIndex
         while i < s.endIndex {
             var consumed = false
-            if let next = s.index(i, offsetBy: 5, limitedBy: s.endIndex),
-               s[i..<next] == "\\frac" {
-                var j = next
-                while j < s.endIndex, s[j].isWhitespace {
-                    j = s.index(after: j)
-                }
-                if j < s.endIndex, s[j] == "{",
-                   let endA = matchBrace(s, from: j) {
-                    var k = s.index(after: endA)
-                    while k < s.endIndex, s[k].isWhitespace {
-                        k = s.index(after: k)
-                    }
-                    if k < s.endIndex, s[k] == "{",
-                       let endB = matchBrace(s, from: k) {
-                        out.append(String(s[s.index(after: j)..<endA]))
-                        out.append("⁄")
-                        out.append(String(s[s.index(after: k)..<endB]))
-                        i = s.index(after: endB)
-                        consumed = true
-                    }
-                }
+            if let frac = parseFracAt(s, from: i) {
+                out.append(frac.a)
+                out.append("⁄")
+                out.append(frac.b)
+                i = frac.end
+                consumed = true
             }
             if !consumed {
                 out.append(s[i])
@@ -723,6 +708,33 @@ enum TeX {
             }
         }
         return out
+    }
+
+    private static func parseFracAt(_ s: String, from: String.Index)
+        -> (a: String, b: String, end: String.Index)? {
+        var result: (String, String, String.Index)? = nil
+        if let afterCmd = s.index(from, offsetBy: 5,
+                                  limitedBy: s.endIndex),
+           s[from..<afterCmd] == "\\frac" {
+            var j = afterCmd
+            while j < s.endIndex, s[j].isWhitespace {
+                j = s.index(after: j)
+            }
+            if j < s.endIndex, s[j] == "{",
+               let endA = matchBrace(s, from: j) {
+                var k = s.index(after: endA)
+                while k < s.endIndex, s[k].isWhitespace {
+                    k = s.index(after: k)
+                }
+                if k < s.endIndex, s[k] == "{",
+                   let endB = matchBrace(s, from: k) {
+                    let a = String(s[s.index(after: j)..<endA])
+                    let b = String(s[s.index(after: k)..<endB])
+                    result = (a, b, s.index(after: endB))
+                }
+            }
+        }
+        return result
     }
 
     private static func matchBrace(_ s: String,

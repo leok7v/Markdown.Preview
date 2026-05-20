@@ -30,3 +30,34 @@ extension NativeText: UIViewRepresentable {
     }
 
 }
+
+extension NativeText {
+
+    var primaryColor: UIColor { UIColor.label }
+    var secondaryColor: UIColor { UIColor.secondaryLabel }
+
+    func mergeTraits(of source: UIFont, into base: UIFont,
+                     bold: Bool) -> UIFont {
+        var result = base
+        var traits = source.fontDescriptor.symbolicTraits
+        traits.formUnion(base.fontDescriptor.symbolicTraits)
+        if bold { traits.insert(.traitBold) }
+        if let descriptor = base.fontDescriptor
+            .withSymbolicTraits(traits) {
+            result = UIFont(descriptor: descriptor,
+                            size: base.pointSize)
+        }
+        return result
+    }
+
+    func boldFont(_ f: UIFont) -> UIFont {
+        var result = f
+        var traits = f.fontDescriptor.symbolicTraits
+        traits.insert(.traitBold)
+        if let d = f.fontDescriptor.withSymbolicTraits(traits) {
+            result = UIFont(descriptor: d, size: f.pointSize)
+        }
+        return result
+    }
+
+}

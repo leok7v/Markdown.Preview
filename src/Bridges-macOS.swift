@@ -92,3 +92,31 @@ extension NativeText: NSViewRepresentable {
     }
 
 }
+
+extension NativeText {
+
+    var primaryColor: NSColor { NSColor.textColor }
+    var secondaryColor: NSColor { NSColor.secondaryLabelColor }
+
+    func mergeTraits(of source: NSFont, into base: NSFont,
+                     bold: Bool) -> NSFont {
+        var result = base
+        var traits = source.fontDescriptor.symbolicTraits
+        traits.formUnion(base.fontDescriptor.symbolicTraits)
+        if bold { traits.insert(.bold) }
+        let descriptor = base.fontDescriptor.withSymbolicTraits(traits)
+        result = NSFont(descriptor: descriptor,
+                        size: base.pointSize) ?? base
+        return result
+    }
+
+    func boldFont(_ f: NSFont) -> NSFont {
+        var result = f
+        var traits = f.fontDescriptor.symbolicTraits
+        traits.insert(.bold)
+        let d = f.fontDescriptor.withSymbolicTraits(traits)
+        result = NSFont(descriptor: d, size: f.pointSize) ?? f
+        return result
+    }
+
+}

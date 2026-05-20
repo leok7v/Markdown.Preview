@@ -167,18 +167,31 @@ final class MarkdownFileWatcher: NSObject, NSFilePresenter {
     }
 
     private func reload() {
-        let coord = NSFileCoordinator(filePresenter: self)
-        var coordError: NSError?
-        coord.coordinate(
-            readingItemAt: url,
-            options: .withoutChanges,
-            error: &coordError) { actualURL in
-                let read = try? String(
-                    contentsOf: actualURL, encoding: .utf8)
-                if let read {
-                    onChange(read)
+        // NSFileCoordinator.coordinate(readingItemAt:...) is synchronous
+        // and can block until the file is available - if another process
+        // (an atomic-write editor saving over our open file) holds it,
+        // the block lasts as long as their write. Apple's docs say not
+        // to call this on the main thread for that reason. Dispatch the
+        // coordinator + read to a background queue and bounce the
+        // resulting text back to main for the @State write in the view.
+        let targetURL = url
+        let changeHandler = onChange
+        DispatchQueue.global(qos: .userInitiated).async {
+            let coord = NSFileCoordinator(filePresenter: self)
+            var coordError: NSError?
+            coord.coordinate(
+                readingItemAt: targetURL,
+                options: .withoutChanges,
+                error: &coordError) { actualURL in
+                    let read = try? String(
+                        contentsOf: actualURL, encoding: .utf8)
+                    if let read {
+                        DispatchQueue.main.async {
+                            changeHandler(read)
+                        }
+                    }
                 }
-            }
+        }
     }
     
 }

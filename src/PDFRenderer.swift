@@ -97,49 +97,9 @@ enum PDFExport {
     }
 
     static func prefetchImages(in blocks: [Block]) async -> [URL: CGImage] {
-        var urls: [URL] = []
-        for b in blocks {
-            switch b {
-                case .image(_, let u, _, _): urls.append(u)
-                case .table(_, let rows):
-                    for row in rows {
-                        for cell in row {
-                            if let info = imageInCell(cell) {
-                                urls.append(info.0)
-                            }
-                        }
-                    }
-                default: break
-            }
-        }
-        return await withTaskGroup(of: (URL, CGImage?).self) { group in
-            for u in urls {
-                group.addTask {
-                    do {
-                        let (data, _) = try await URLSession
-                            .shared.data(from: u)
-                        return (u, decode(data))
-                    } catch {
-                        return (u, nil)
-                    }
-                }
-            }
-            var result: [URL: CGImage] = [:]
-            for await (u, img) in group {
-                if let img { result[u] = img }
-            }
-            return result
-        }
-    }
-
-    static func imageInCell(_ cell: String) -> (URL, CGFloat?, CGFloat?)? {
-        var result: (URL, CGFloat?, CGFloat?)? = nil
-        let parsed = Markdown.parse(cell)
-        if let first = parsed.first,
-           case .image(_, let url, let width, let height) = first {
-            result = (url, width, height)
-        }
-        return result
+        let urls = ImagePrefetch.collectURLs(in: blocks)
+        let datas = await ImagePrefetch.fetch(urls)
+        return datas.compactMapValues { d in decode(d) }
     }
 
     private static func decode(_ data: Data) -> CGImage? {
@@ -548,7 +508,7 @@ private final class PDFRenderer {
             for c in 0..<cols {
                 let txt = c < r.count ? r[c] : ""
                 var w: CGFloat = 80
-                if let info = PDFExport.imageInCell(txt),
+                if let info = ImagePrefetch.imageInCell(txt),
                    let cg = images[info.0] {
                     let imgW = CGFloat(cg.width)
                     let imgH = CGFloat(cg.height)
@@ -578,7 +538,7 @@ private final class PDFRenderer {
             var rowH: CGFloat = bodySize * 1.3
             for c in 0..<cols {
                 let txt = c < cells.count ? cells[c] : ""
-                if let info = PDFExport.imageInCell(txt),
+                if let info = ImagePrefetch.imageInCell(txt),
                    let cg = images[info.0] {
                     let cellW = colWidths[c] - 2 * rowPad
                     let h = predictImageHeight(
@@ -595,7 +555,7 @@ private final class PDFRenderer {
                 let txt = c < cells.count ? cells[c] : ""
                 let xL = x + rowPad
                 let cellW = colWidths[c] - 2 * rowPad
-                if let info = PDFExport.imageInCell(txt),
+                if let info = ImagePrefetch.imageInCell(txt),
                    let cg = images[info.0] {
                     let used = drawCellImage(
                         cg, x: xL, topY: savedY,
@@ -638,11 +598,11 @@ private final class PDFRenderer {
         for row in rows { drawRow(row, bold: false) }
     }
 
-    private func predictImageHeight(_ cg: CGImage,
-                                maxWidth: CGFloat,
-                           explicitWidth: CGFloat?,
-                          explicitHeight: CGFloat?) -> CGFloat {
-        var result: CGFloat = 0
+    private func imageDrawSize(_ cg: CGImage,
+                            maxWidth: CGFloat,
+                       explicitWidth: CGFloat?,
+                      explicitHeight: CGFloat?) -> CGSize {
+        var result: CGSize = .zero
         let imgW = CGFloat(cg.width)
         let imgH = CGFloat(cg.height)
         if imgW > 0, imgH > 0 {
@@ -666,9 +626,18 @@ private final class PDFRenderer {
                 drawW = maxWidth
                 drawH = drawW / aspect
             }
-            result = drawH
+            result = CGSize(width: drawW, height: drawH)
         }
         return result
+    }
+
+    private func predictImageHeight(_ cg: CGImage,
+                                maxWidth: CGFloat,
+                           explicitWidth: CGFloat?,
+                          explicitHeight: CGFloat?) -> CGFloat {
+        imageDrawSize(cg, maxWidth: maxWidth,
+                      explicitWidth: explicitWidth,
+                      explicitHeight: explicitHeight).height
     }
 
     private func drawCellImage(_ cg: CGImage,
@@ -677,36 +646,15 @@ private final class PDFRenderer {
                            maxWidth: CGFloat,
                       explicitWidth: CGFloat?,
                      explicitHeight: CGFloat?) -> CGFloat {
-        var result: CGFloat = 0
-        let imgW = CGFloat(cg.width)
-        let imgH = CGFloat(cg.height)
-        if imgW > 0, imgH > 0 {
-            let aspect = imgW / imgH
-            var drawW: CGFloat
-            var drawH: CGFloat
-            if let w = explicitWidth, let h = explicitHeight {
-                drawW = w
-                drawH = h
-            } else if let w = explicitWidth {
-                drawW = w
-                drawH = w / aspect
-            } else if let h = explicitHeight {
-                drawH = h
-                drawW = h * aspect
-            } else {
-                drawW = min(maxWidth, imgW * 0.5)
-                drawH = drawW / aspect
-            }
-            if drawW > maxWidth {
-                drawW = maxWidth
-                drawH = drawW / aspect
-            }
-            let originY = topY - drawH
-            ctx.draw(cg, in: CGRect(x: x, y: originY,
-                                    width: drawW, height: drawH))
-            result = drawH
+        let size = imageDrawSize(cg, maxWidth: maxWidth,
+                                 explicitWidth: explicitWidth,
+                                 explicitHeight: explicitHeight)
+        if size.height > 0 {
+            ctx.draw(cg, in: CGRect(x: x, y: topY - size.height,
+                                    width: size.width,
+                                    height: size.height))
         }
-        return result
+        return size.height
     }
 
     private func drawRule() {
